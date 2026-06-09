@@ -1,0 +1,22 @@
+# Virtual Environment
+venv/
+
+# API Keys
+.env
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Chroma Vector Database
+vectorstore/
+
+# VS Code Settings
+.vscode/
+
+# Streamlit Cache
+.streamlit/secrets.toml
+
+# OS Files
+.DS_Store
+Thumbs.db
