@@ -2,15 +2,19 @@ import os
 from dotenv import load_dotenv
 
 from langchain_google_genai import ChatGoogleGenerativeAI
+
 from retriever import initialize_retriever
+from config import LLM_MODEL
+from logger import logger
 
 # Load API key
 load_dotenv()
+
 print("Step 1")
 
 # Gemini model
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+    model=LLM_MODEL,
     google_api_key=os.getenv("GOOGLE_API_KEY"),
     temperature=0
 )
@@ -24,9 +28,10 @@ print("Step 3")
 
 
 def ask_question(question):
-
-    # Retrieve top 3 chunks
+    logger.info(f"Question: {question}")
+    # Retrieve top chunks
     docs = retriever.invoke(question)
+    logger.info(f"Retrieved {len(docs)} documents")
 
     print("Step 4")
 
@@ -53,11 +58,21 @@ Question:
 Answer:
 """
 
-    response = llm.invoke(prompt)
+    try:
 
-    print("Step 5")
+        response = llm.invoke(prompt)
 
-    return response.content
+        print("Step 5")
+
+        logger.info(f"Answer: {response.content}")
+
+        return response.content
+
+    except Exception as e:
+
+        logger.error(f"Error: {str(e)}")
+
+    return "An error occurred while generating the response."
 
 
 if __name__ == "__main__":
