@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from retriever import initialize_retriever
+from retriever import retrieve_with_scores
 from config import LLM_MODEL
 from logger import logger
 
@@ -20,16 +20,32 @@ llm = ChatGoogleGenerativeAI(
 )
 
 
-# Load retriever
-retriever = initialize_retriever()
-
-
 def ask_question(question):
 
     logger.info(f"Question: {question}")
 
-    # Retrieve relevant chunks
-    docs = retriever.invoke(question)
+    # Retrieve relevant chunks with scores
+    results = retrieve_with_scores(question)
+
+    docs = [doc for doc, score in results]
+    scores = [score for doc, score in results]
+
+    # Calculate confidence
+    average_score = sum(scores) / len(scores)
+
+    if average_score < 0.55:
+        confidence = "High"
+
+    elif average_score < 0.75:
+        confidence = "Medium"
+
+    else:
+        confidence = "Low"
+
+    # Logging
+    logger.info(f"Retrieved {len(docs)} documents")
+    logger.info(f"Average Score: {average_score:.3f}")
+    logger.info(f"Confidence: {confidence}")
 
     # Extract source information
     sources = []
@@ -52,7 +68,6 @@ def ask_question(question):
     # Remove duplicate sources
     sources = list(dict.fromkeys(sources))
 
-    logger.info(f"Retrieved {len(docs)} documents")
     logger.info(f"Retrieved Sources: {sources}")
 
     # Create context
@@ -84,9 +99,15 @@ Answer:
 
         logger.info(f"Answer: {response.content}")
 
-        # Don't show sources if answer not found
+        # If answer not found, don't show sources
         if "I could not find that information" in response.content:
-            return response.content
+
+            return (
+                response.content
+                + "\n\nRetrieval Information:"
+                + f"\n• Documents Retrieved: {len(docs)}"
+                + f"\n• Confidence: {confidence}"
+            )
 
         source_text = "\n".join(
             [f"• {source}" for source in sources]
@@ -96,6 +117,9 @@ Answer:
             response.content
             + "\n\nSources:\n"
             + source_text
+            + "\n\nRetrieval Information:"
+            + f"\n• Documents Retrieved: {len(docs)}"
+            + f"\n• Confidence: {confidence}"
         )
 
         return final_answer

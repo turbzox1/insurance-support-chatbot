@@ -1,6 +1,6 @@
 2026-06-11 00:57:33,213 - INFO - Question: What is Zero Co-Pay?
 2026-06-11 00:57:33,693 - INFO - Retrieved 3 documents
-2026-06-11 00:57:35,732 - INFO - Answer: Zero Co-pay is an Add-on which can be endorsed along with the Base Plan only and cannot be bought in isolation or as a separate product. This Add-on shall remove the co-payment applicable in the base plan, meaning there will be NO co-payment under the base plan except for the co-payment (if applicable) for taking treatment in a higher room category than the eligible room category as specified in Your Base Plan’s Policy Schedule.
+2026-06-11 00:57:35,732 - INFO - Answer: Zero Co-pay is an Add-on which can be endorsed along with the Base Plan only and cannot be bought in isolation or as a separate product. This Add-on shall remove the co-payment applicable in the base plan, meaning there will be NO co-payment under the base plan except for the co-payment (if applicable) for taking treatment in a higher room category than the eligible room category as specified in Your Base Planï¿½s Policy Schedule.
 2026-06-11 14:26:18,992 - INFO - Question: What is Insurance Ombudsman?
 2026-06-11 14:26:19,617 - INFO - Retrieved 3 documents
 2026-06-11 14:26:21,932 - INFO - Answer: The institution of Insurance Ombudsmen has been created by the Government of India under the Redressal of Public Grievances Rules, 1998. Each Ombudsman is empowered to redress customer grievances in respect of insurance contracts on personal lines where the compensation amount sought is less than Rs.30 lakhs. The Insurance Ombudsman adjudicates upon the complaint and issues an Award.
@@ -15,3 +15,44 @@
 2026-06-11 14:35:39,910 - INFO - Retrieved 3 documents
 2026-06-11 14:35:39,911 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 37)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 35)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 48)']
 2026-06-11 14:35:41,121 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-11 14:53:48,670 - INFO - Question: how to claim insurance
+2026-06-11 14:53:49,124 - INFO - Retrieved 3 documents
+2026-06-11 14:53:49,124 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 49)', 'Health-Claim-Process-pro.pdf (Page 1)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 50)']
+2026-06-11 14:53:52,751 - INFO - Answer: To claim health insurance:
+
+1.  Intimate at least 48 hours prior to a planned hospitalization, or within 24 hours of hospitalization in an emergency situation.
+2.  Call the toll-free number 1800 2666 or forward an SMS "HEALTHCLAIM" to 575758 to receive a call back from ICICI Lombard Health Care.
+3.  Provide the necessary information during claim intimation to ICICI Lombard Health.
+2026-06-11 14:54:23,930 - INFO - Question: but why to do this
+2026-06-11 14:54:23,979 - INFO - Retrieved 3 documents
+2026-06-11 14:54:23,979 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 75)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 76)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 66)']
+2026-06-11 14:54:25,977 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-11 15:13:10,657 - INFO - Question: how to claim insurance
+2026-06-11 15:13:11,335 - INFO - Retrieved 3 documents
+2026-06-11 15:13:11,335 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 49)', 'Health-Claim-Process-pro.pdf (Page 1)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 50)']
+2026-06-11 15:13:14,458 - INFO - Answer: To claim health insurance:
+
+1.  Intimate at least 48 hours prior to a planned hospitalization, or within 24 hours of hospitalization in an emergency situation.
+2.  Call the toll-free number 1800 2666 or forward an SMS "HEALTHCLAIM" to 575758 to receive a call back from ICICI Lombard Health Care.
+3.  Provide the necessary information during claim intimation to ICICI Lombard Health.
+2026-06-11 15:16:13,741 - INFO - Question: L
+2026-06-11 15:16:13,786 - INFO - Retrieved 3 documents
+2026-06-11 15:16:13,786 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 37)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 29)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 48)']
+2026-06-11 15:16:33,363 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-11 15:35:02,317 - INFO - Question: how to file insurance
+2026-06-11 15:35:02,912 - INFO - Retrieved 3 documents
+2026-06-11 15:35:02,912 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 69)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 53)', 'Health-Claim-Process-pro.pdf (Page 1)']
+2026-06-11 15:35:14,091 - INFO - Answer: To file a health insurance claim:
+
+1.  Intimate at least 48 hours prior for a planned hospitalization.
+2.  In case of an emergency situation, intimate within 24 hours of hospitalization.
+3.  Call on toll-free no. 1800 2666 or forward an SMS "HEALTHCLAIM" to 575758 to receive a call back from ICICI Lombard Health Care.
+4.  Provide the required information during claim intimation to ICICI Lombard Health.
+2026-06-11 15:36:02,795 - INFO - Question: Insurance Ombudsmen details
+2026-06-11 15:36:16,864 - INFO - Retrieved 3 documents
+2026-06-11 15:36:16,864 - INFO - Average Score: 0.374
+2026-06-11 15:36:16,865 - INFO - Confidence: High
+2026-06-11 15:36:16,865 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 42)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 43)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 2)']
+2026-06-11 15:36:25,463 - INFO - Answer: There shall be a Council for Insurance Ombudsmen consisting of nine members including the Chairperson. The members of the Council for Insurance Ombudsmen shall comprise of:
+*   Two persons representing life insurers to be nominated by the Life Insurance Council.
+*   Two persons representing General insurers, other than stand-alone health insurers, to be nominated by the General Insurance Council.

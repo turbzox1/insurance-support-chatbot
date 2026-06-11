@@ -1,22 +1,37 @@
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 
+from config import (
+    EMBEDDING_MODEL,
+    VECTORSTORE_PATH,
+    TOP_K
+)
 
-def initialize_retriever(k=3):
+
+def load_vectorstore():
     """
-    Load the embedding model and existing Chroma vector database.
-    Return a retriever that fetches top-k relevant chunks.
+    Load embedding model and Chroma vector database.
     """
 
     embedding_model = HuggingFaceEmbeddings(
-        model_name="BAAI/bge-small-en-v1.5",
+        model_name=EMBEDDING_MODEL,
         model_kwargs={"device": "cpu"}
     )
 
     vectorstore = Chroma(
-        persist_directory="vectorstore",
+        persist_directory=VECTORSTORE_PATH,
         embedding_function=embedding_model
     )
+
+    return vectorstore
+
+
+def initialize_retriever(k=TOP_K):
+    """
+    Standard retriever for compatibility.
+    """
+
+    vectorstore = load_vectorstore()
 
     retriever = vectorstore.as_retriever(
         search_kwargs={"k": k}
@@ -25,20 +40,37 @@ def initialize_retriever(k=3):
     return retriever
 
 
-# This block runs ONLY when retriever.py is executed directly
+def retrieve_with_scores(query, k=TOP_K):
+    """
+    Returns:
+    [
+        (Document, score),
+        (Document, score),
+        ...
+    ]
+    """
+
+    vectorstore = load_vectorstore()
+
+    results = vectorstore.similarity_search_with_score(
+        query=query,
+        k=k
+    )
+
+    return results
+
+
 if __name__ == "__main__":
 
-    print("Testing Retriever...")
-
-    retriever = initialize_retriever()
+    print("Testing Retriever With Scores...\n")
 
     query = "What is the ombudsman process?"
 
-    results = retriever.invoke(query)
+    results = retrieve_with_scores(query)
 
-    print("\nRetrieved Chunks:\n")
+    for i, (doc, score) in enumerate(results, start=1):
 
-    for i, doc in enumerate(results, start=1):
         print(f"\nChunk {i}")
         print("-" * 50)
+        print(f"Score: {score}")
         print(doc.page_content[:500])
