@@ -7,10 +7,10 @@ from retriever import initialize_retriever
 from config import LLM_MODEL
 from logger import logger
 
+
 # Load API key
 load_dotenv()
 
-print("Step 1")
 
 # Gemini model
 llm = ChatGoogleGenerativeAI(
@@ -19,23 +19,43 @@ llm = ChatGoogleGenerativeAI(
     temperature=0
 )
 
-print("Step 2")
 
 # Load retriever
 retriever = initialize_retriever()
 
-print("Step 3")
-
 
 def ask_question(question):
+
     logger.info(f"Question: {question}")
-    # Retrieve top chunks
+
+    # Retrieve relevant chunks
     docs = retriever.invoke(question)
+
+    # Extract source information
+    sources = []
+
+    for doc in docs:
+
+        file_name = os.path.basename(
+            doc.metadata.get("source", "Unknown Source")
+        )
+
+        page_number = doc.metadata.get(
+            "page_label",
+            doc.metadata.get("page", "Unknown")
+        )
+
+        sources.append(
+            f"{file_name} (Page {page_number})"
+        )
+
+    # Remove duplicate sources
+    sources = list(dict.fromkeys(sources))
+
     logger.info(f"Retrieved {len(docs)} documents")
+    logger.info(f"Retrieved Sources: {sources}")
 
-    print("Step 4")
-
-    # Combine retrieved chunks into context
+    # Create context
     context = "\n\n".join(
         [doc.page_content for doc in docs]
     )
@@ -62,17 +82,29 @@ Answer:
 
         response = llm.invoke(prompt)
 
-        print("Step 5")
-
         logger.info(f"Answer: {response.content}")
 
-        return response.content
+        # Don't show sources if answer not found
+        if "I could not find that information" in response.content:
+            return response.content
+
+        source_text = "\n".join(
+            [f"• {source}" for source in sources]
+        )
+
+        final_answer = (
+            response.content
+            + "\n\nSources:\n"
+            + source_text
+        )
+
+        return final_answer
 
     except Exception as e:
 
         logger.error(f"Error: {str(e)}")
 
-    return "An error occurred while generating the response."
+        return "An error occurred while generating the response."
 
 
 if __name__ == "__main__":
