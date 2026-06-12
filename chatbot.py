@@ -11,6 +11,11 @@ from logger import logger
 # Load API key
 load_dotenv()
 
+RETRIEVAL_HEADER = "\n\nRetrieval Information:"
+
+# In-memory conversation history
+chat_history = []
+
 
 # Gemini model
 llm = ChatGoogleGenerativeAI(
@@ -24,8 +29,30 @@ def ask_question(question):
 
     logger.info(f"Question: {question}")
 
+    # Build conversation context from last 2 exchanges
+    history_context = ""
+
+    for q, a in chat_history[-2:]:
+
+        history_context += (
+            f"Previous Question: {q}\n"
+            f"Previous Answer: {a}\n\n"
+        )
+
+    retrieval_query = (
+        history_context
+        + f"Current Question: {question}"
+    )
+
+    logger.info("Using conversation history for retrieval")
+
     # Retrieve relevant chunks with scores
-    results = retrieve_with_scores(question)
+    results = retrieve_with_scores(retrieval_query)
+
+    for i, (doc, score) in enumerate(results, start=1):
+        print(f"\nChunk {i}")
+        print(f"Score: {score}")
+        print(doc.page_content[:300])
 
     docs = [doc for doc, score in results]
     scores = [score for doc, score in results]
@@ -43,7 +70,6 @@ def ask_question(question):
         confidence = "Low"
 
     # Hallucination guard
-
     if confidence == "Low":
 
         logger.warning(
@@ -52,12 +78,11 @@ def ask_question(question):
 
         return (
             "I could not find reliable information in the provided documents."
-            + "\n\nRetrieval Information:"
+            + RETRIEVAL_HEADER
             + f"\n• Documents Retrieved: {len(docs)}"
             + f"\n• Confidence: {confidence}"
         )
 
-    # Logging
     logger.info(f"Retrieved {len(docs)} documents")
     logger.info(f"Average Score: {average_score:.3f}")
     logger.info(f"Confidence: {confidence}")
@@ -91,30 +116,33 @@ def ask_question(question):
     )
 
     prompt = f"""
-    You are an Insurance Support Assistant.
+You are an Insurance Support Assistant.
 
-    STRICT RULES:
+STRICT RULES:
 
-    1. Use ONLY the information provided in the context.
-    2. Do NOT use external knowledge.
-    3. Do NOT make assumptions or guesses.
-    4. If the answer is partially available, answer only the available part.
-    5. If the answer is not available in the context, reply exactly:
+1. Use ONLY the information provided in the context.
+2. Do NOT use external knowledge.
+3. Do NOT make assumptions or guesses.
+4. If the answer is partially available, answer only the available part.
+5. If the answer is not available in the context, reply exactly:
 
-    I could not find that information in the provided documents.
+I could not find that information in the provided documents.
 
-    6. Do NOT mention facts that are not present in the context.
-    7. Keep answers concise and factual.
-    8. Do NOT explain beyond the provided information.
+6. Do NOT mention facts that are not present in the context.
+7. Keep answers concise and factual.
+8. Do NOT explain beyond the provided information.
 
-    Context:
-    {context}
+Conversation History:
+{history_context}
 
-    Question:
-    {question}
+Context:
+{context}
 
-    Answer:
-    """
+Question:
+{question}
+
+Answer:
+"""
 
     try:
 
@@ -122,12 +150,21 @@ def ask_question(question):
 
         logger.info(f"Answer: {response.content}")
 
+        # Store memory
+        chat_history.append(
+            (question, response.content)
+        )
+
+        # Limit memory size
+        if len(chat_history) > 10:
+            chat_history.pop(0)
+
         # If answer not found, don't show sources
         if "I could not find that information" in response.content:
 
             return (
                 response.content
-                + "\n\nRetrieval Information:"
+                + RETRIEVAL_HEADER
                 + f"\n• Documents Retrieved: {len(docs)}"
                 + f"\n• Confidence: {confidence}"
             )
@@ -140,7 +177,7 @@ def ask_question(question):
             response.content
             + "\n\nSources:\n"
             + source_text
-            + "\n\nRetrieval Information:"
+            + RETRIEVAL_HEADER
             + f"\n• Documents Retrieved: {len(docs)}"
             + f"\n• Confidence: {confidence}"
         )

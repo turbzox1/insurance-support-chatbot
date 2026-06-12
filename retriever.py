@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     print("Testing Retriever With Scores...\n")
 
-    query = "What is the ombudsman process?"
+    query = "Who appoints Insurance Ombudsmen?"
 
     results = retrieve_with_scores(query)
 

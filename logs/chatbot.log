@@ -58,3 +58,52 @@
 *   Two persons representing General insurers, other than stand-alone health insurers, to be nominated by the General Insurance Council.
 2026-06-12 13:46:31,122 - INFO - Question: How does Bitcoin mining work?
 2026-06-12 13:46:55,226 - WARNING - Low confidence retrieval detected for question: How does Bitcoin mining work?
+2026-06-12 14:00:49,549 - INFO - Question: What is Insurance Ombudsman?
+2026-06-12 14:00:49,550 - INFO - Using conversation history for retrieval
+2026-06-12 14:01:07,140 - INFO - Retrieved 3 documents
+2026-06-12 14:01:07,140 - INFO - Average Score: 0.484
+2026-06-12 14:01:07,140 - INFO - Confidence: High
+2026-06-12 14:01:07,141 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 42)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-12 14:01:11,178 - INFO - Answer: Each Ombudsman is empowered to redress customer grievances in respect of insurance contracts on personal lines where the compensation amount sought is less than Rs.30 lakhs. The Insurance Ombudsman adjudicates upon the complaint and issues an Award.
+2026-06-12 14:01:29,963 - INFO - Question: Who appoints them?
+2026-06-12 14:01:29,963 - INFO - Using conversation history for retrieval
+2026-06-12 14:01:35,172 - INFO - Retrieved 3 documents
+2026-06-12 14:01:35,173 - INFO - Average Score: 0.251
+2026-06-12 14:01:35,173 - INFO - Confidence: High
+2026-06-12 14:01:35,173 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 63)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 64)']
+2026-06-12 14:01:40,258 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-12 14:03:42,971 - INFO - Question: What is Insurance Ombudsman?
+2026-06-12 14:03:42,972 - INFO - Using conversation history for retrieval
+2026-06-12 14:03:48,320 - INFO - Retrieved 3 documents
+2026-06-12 14:03:48,320 - INFO - Average Score: 0.264
+2026-06-12 14:03:48,320 - INFO - Confidence: High
+2026-06-12 14:03:48,320 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 63)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 64)']
+2026-06-12 14:03:50,781 - INFO - Answer: The institution of Insurance Ombudsmen has been created by the Government of India under the Redressal of Public Grievances Rules, 1998. Each Ombudsman is empowered to redress customer grievances in respect of insurance contracts on personal lines where the compensation amount sought is less than Rs.30 lakhs. The Insurance Ombudsman adjudicates upon the complaint and issues an Award.
+2026-06-12 14:04:11,763 - INFO - Question: Who appoints Insurance Ombudsmen?
+2026-06-12 14:04:11,763 - INFO - Using conversation history for retrieval
+2026-06-12 14:04:16,953 - INFO - Retrieved 3 documents
+2026-06-12 14:04:16,953 - INFO - Average Score: 0.312
+2026-06-12 14:04:16,953 - INFO - Confidence: High
+2026-06-12 14:04:16,953 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 64)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 6)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)']
+2026-06-12 14:04:19,911 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-12 14:05:38,403 - INFO - Question: python retriever.py
+2026-06-12 14:05:38,403 - INFO - Using conversation history for retrieval
+2026-06-12 14:05:44,712 - INFO - Retrieved 3 documents
+2026-06-12 14:05:44,712 - INFO - Average Score: 0.261
+2026-06-12 14:05:44,712 - INFO - Confidence: High
+2026-06-12 14:05:44,712 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 64)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 6)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)']
+2026-06-12 14:05:46,837 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-12 14:12:51,582 - INFO - Question: Who appoints Insurance Ombudsmen?
+2026-06-12 14:12:51,583 - INFO - Using conversation history for retrieval
+2026-06-12 14:13:05,993 - INFO - Retrieved 3 documents
+2026-06-12 14:13:05,994 - INFO - Average Score: 0.442
+2026-06-12 14:13:05,994 - INFO - Confidence: High
+2026-06-12 14:13:05,994 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 42)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)']
+2026-06-12 14:13:07,602 - INFO - Answer: The Insurance Ombudsman shall be appointed by the Council for Insurance Ombudsmen on the recommendations of the Selection Committee.
+2026-06-12 14:14:24,439 - INFO - Question: this appoints who?
+2026-06-12 14:14:24,441 - INFO - Using conversation history for retrieval
+2026-06-12 14:14:30,773 - INFO - Retrieved 3 documents
+2026-06-12 14:14:30,773 - INFO - Average Score: 0.359
+2026-06-12 14:14:30,774 - INFO - Confidence: High
+2026-06-12 14:14:30,774 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-12 14:14:33,359 - INFO - Answer: The Council for Insurance Ombudsmen appoints the Insurance Ombudsman.
