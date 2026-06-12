@@ -3,7 +3,9 @@ CHUNK_SIZE = 500
 CHUNK_OVERLAP = 100
 
 # Retrieval Settings
-TOP_K = 3
+TOP_K = 5
+
+SIMILARITY_THRESHOLD = 0.75
 
 # Embedding Model
 EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"

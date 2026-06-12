@@ -4,7 +4,10 @@ from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from retriever import retrieve_with_scores
-from config import LLM_MODEL
+from config import (
+    LLM_MODEL,
+    SIMILARITY_THRESHOLD
+)
 from logger import logger
 
 
@@ -63,7 +66,7 @@ def ask_question(question):
     if average_score < 0.55:
         confidence = "High"
 
-    elif average_score < 0.75:
+    elif average_score < SIMILARITY_THRESHOLD:
         confidence = "Medium"
 
     else:
