@@ -107,3 +107,41 @@
 2026-06-12 14:14:30,774 - INFO - Confidence: High
 2026-06-12 14:14:30,774 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
 2026-06-12 14:14:33,359 - INFO - Answer: The Council for Insurance Ombudsmen appoints the Insurance Ombudsman.
+2026-06-12 15:13:08,778 - INFO - Question: what is insurance ombudsman
+2026-06-12 15:13:08,780 - INFO - Using conversation history for retrieval
+2026-06-12 15:13:14,656 - INFO - Retrieved 5 documents
+2026-06-12 15:13:14,656 - INFO - Average Score: 3.602
+2026-06-12 15:13:14,656 - INFO - Confidence: High
+2026-06-12 15:13:14,656 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 62)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 63)']
+2026-06-12 15:13:17,317 - INFO - Answer: The Insurance Ombudsman is a system introduced by the Government in the Insurance Sector with effect from 11th November 1998. Each Ombudsman is empowered to redress customer grievances in respect of insurance contracts on personal lines where the compensation amount sought is less than Rs.30 lakhs. The Insurance Ombudsman adjudicates upon the complaint and issues an Award.
+2026-06-12 15:13:50,615 - INFO - Question: this appoints who?
+2026-06-12 15:13:50,615 - INFO - Using conversation history for retrieval
+2026-06-12 15:13:56,180 - INFO - Retrieved 5 documents
+2026-06-12 15:13:56,180 - INFO - Average Score: 3.005
+2026-06-12 15:13:56,180 - INFO - Confidence: High
+2026-06-12 15:13:56,180 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 62)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 6)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 64)']
+2026-06-12 15:13:59,555 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-12 15:16:10,751 - INFO - Question: Who appoints Insurance Ombudsman?
+2026-06-12 15:16:10,752 - INFO - Using conversation history for retrieval
+2026-06-12 15:16:17,279 - INFO - Retrieved 5 documents
+2026-06-12 15:16:17,279 - INFO - Average Score: 2.161
+2026-06-12 15:16:17,279 - INFO - Confidence: Medium
+2026-06-12 15:16:17,280 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 62)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-12 15:16:20,297 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-12 15:22:11,498 - INFO - Question: Who appoints Insurance Ombudsman?
+2026-06-12 15:22:11,499 - INFO - Using conversation history for retrieval
+2026-06-12 15:22:18,884 - WARNING - Low confidence retrieval detected for question: Who appoints Insurance Ombudsman?
+2026-06-12 15:37:39,989 - INFO - Question: Who appoints Insurance Ombudsman?
+2026-06-12 15:37:39,991 - INFO - Using conversation history for retrieval
+2026-06-12 15:37:46,001 - INFO - Retrieved 5 documents
+2026-06-12 15:37:46,002 - INFO - Average Score: 3.760
+2026-06-12 15:37:46,002 - INFO - Confidence: High
+2026-06-12 15:37:46,003 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 4)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 62)']
+2026-06-12 15:37:48,429 - INFO - Answer: The Insurance Ombudsman shall be appointed by the Council for Insurance Ombudsmen on the recommendations of the Selection Committee.
+2026-06-12 15:38:16,257 - INFO - Question: who is appointing this
+2026-06-12 15:38:16,258 - INFO - Using conversation history for retrieval
+2026-06-12 15:38:23,146 - INFO - Retrieved 5 documents
+2026-06-12 15:38:23,146 - INFO - Average Score: 6.078
+2026-06-12 15:38:23,146 - INFO - Confidence: High
+2026-06-12 15:38:23,147 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-12 15:38:25,364 - INFO - Answer: The Council for Insurance Ombudsmen.

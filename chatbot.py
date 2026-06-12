@@ -3,11 +3,10 @@ from dotenv import load_dotenv
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from retriever import retrieve_with_scores
-from config import (
-    LLM_MODEL,
-    SIMILARITY_THRESHOLD
-)
+from hybrid_retriever import HybridRetriever
+from reranker import Reranker
+
+from config import LLM_MODEL
 from logger import logger
 
 
@@ -26,6 +25,11 @@ llm = ChatGoogleGenerativeAI(
     google_api_key=os.getenv("GOOGLE_API_KEY"),
     temperature=0
 )
+
+# Retrieval components
+hybrid_retriever = HybridRetriever()
+
+reranker = Reranker()
 
 
 def ask_question(question):
@@ -47,26 +51,51 @@ def ask_question(question):
         + f"Current Question: {question}"
     )
 
-    logger.info("Using conversation history for retrieval")
+    logger.info(
+        "Using conversation history for retrieval"
+    )
 
-    # Retrieve relevant chunks with scores
-    results = retrieve_with_scores(retrieval_query)
+    # Hybrid Retrieval
+    retrieved_docs = hybrid_retriever.hybrid_search(
+        retrieval_query,
+        k=10
+    )
 
-    for i, (doc, score) in enumerate(results, start=1):
-        print(f"\nChunk {i}")
-        print(f"Score: {score}")
+    # Re-ranking
+    reranked_results = reranker.rerank(
+        retrieval_query,
+        retrieved_docs,
+        top_k=5
+    )
+
+    # Debug output
+    for i, (doc, score) in enumerate(
+        reranked_results,
+        start=1
+    ):
+
+        print(f"\nRank {i}")
+        print(f"Score: {score:.4f}")
+        print("-" * 50)
         print(doc.page_content[:300])
 
-    docs = [doc for doc, score in results]
-    scores = [score for doc, score in results]
+    docs = [
+        doc
+        for doc, score in reranked_results
+    ]
 
-    # Calculate confidence
+    scores = [
+        score
+        for doc, score in reranked_results
+    ]
+
+    # Confidence calculation
     average_score = sum(scores) / len(scores)
 
-    if average_score < 0.55:
+    if average_score > 3:
         confidence = "High"
 
-    elif average_score < SIMILARITY_THRESHOLD:
+    elif average_score > 1:
         confidence = "Medium"
 
     else:
@@ -86,36 +115,57 @@ def ask_question(question):
             + f"\n• Confidence: {confidence}"
         )
 
-    logger.info(f"Retrieved {len(docs)} documents")
-    logger.info(f"Average Score: {average_score:.3f}")
-    logger.info(f"Confidence: {confidence}")
+    logger.info(
+        f"Retrieved {len(docs)} documents"
+    )
 
-    # Extract source information
+    logger.info(
+        f"Average Score: {average_score:.3f}"
+    )
+
+    logger.info(
+        f"Confidence: {confidence}"
+    )
+
+    # Extract sources
     sources = []
 
     for doc in docs:
 
         file_name = os.path.basename(
-            doc.metadata.get("source", "Unknown Source")
+            doc.metadata.get(
+                "source",
+                "Unknown Source"
+            )
         )
 
         page_number = doc.metadata.get(
             "page_label",
-            doc.metadata.get("page", "Unknown")
+            doc.metadata.get(
+                "page",
+                "Unknown"
+            )
         )
 
         sources.append(
             f"{file_name} (Page {page_number})"
         )
 
-    # Remove duplicate sources
-    sources = list(dict.fromkeys(sources))
+    # Remove duplicates
+    sources = list(
+        dict.fromkeys(sources)
+    )
 
-    logger.info(f"Retrieved Sources: {sources}")
+    logger.info(
+        f"Retrieved Sources: {sources}"
+    )
 
-    # Create context
+    # Build context
     context = "\n\n".join(
-        [doc.page_content for doc in docs]
+        [
+            doc.page_content
+            for doc in docs
+        ]
     )
 
     prompt = f"""
@@ -151,19 +201,27 @@ Answer:
 
         response = llm.invoke(prompt)
 
-        logger.info(f"Answer: {response.content}")
+        logger.info(
+            f"Answer: {response.content}"
+        )
 
         # Store memory
         chat_history.append(
-            (question, response.content)
+            (
+                question,
+                response.content
+            )
         )
 
-        # Limit memory size
+        # Keep only latest 10 exchanges
         if len(chat_history) > 10:
             chat_history.pop(0)
 
-        # If answer not found, don't show sources
-        if "I could not find that information" in response.content:
+        # If answer not found
+        if (
+            "I could not find that information"
+            in response.content
+        ):
 
             return (
                 response.content
@@ -173,7 +231,10 @@ Answer:
             )
 
         source_text = "\n".join(
-            [f"• {source}" for source in sources]
+            [
+                f"• {source}"
+                for source in sources
+            ]
         )
 
         final_answer = (
@@ -189,21 +250,30 @@ Answer:
 
     except Exception as e:
 
-        logger.error(f"Error: {str(e)}")
+        logger.error(
+            f"Error: {str(e)}"
+        )
 
-        return "An error occurred while generating the response."
+        return (
+            "An error occurred while generating the response."
+        )
 
 
 if __name__ == "__main__":
 
     while True:
 
-        question = input("\nAsk a Question: ")
+        question = input(
+            "\nAsk a Question: "
+        )
 
         if question.lower() == "exit":
             break
 
-        answer = ask_question(question)
+        answer = ask_question(
+            question
+        )
 
         print("\nAnswer:\n")
+
         print(answer)

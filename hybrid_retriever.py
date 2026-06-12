@@ -21,7 +21,7 @@ class HybridRetriever:
             self.tokenized_docs
         )
 
-    def bm25_search(self, query, k=5):
+    def bm25_search(self, query, k=20):
 
         query_tokens = query.lower().split()
 
@@ -37,46 +37,72 @@ class HybridRetriever:
 
         return ranked_results[:k]
 
-    def hybrid_search(self, query, k=5):
+    def hybrid_search(self, query, k=10):
 
-        # BM25 results
+        # Get more candidates from both retrievers
         bm25_results = self.bm25_search(
             query,
-            k=k
+            k=20
         )
 
-        # Vector results
         vector_results = retrieve_with_scores(
             query
         )
 
-        merged = []
+        # Reciprocal Rank Fusion (RRF)
+        rrf_scores = {}
 
-        seen = set()
+        # BM25 contribution
+        for rank, (doc, score) in enumerate(
+            bm25_results,
+            start=1
+        ):
 
-        # Add BM25 results
+            content = doc.page_content
+
+            rrf_scores[content] = (
+                rrf_scores.get(content, 0)
+                + 1 / (60 + rank)
+            )
+
+        # Vector contribution
+        for rank, (doc, score) in enumerate(
+            vector_results,
+            start=1
+        ):
+
+            content = doc.page_content
+
+            rrf_scores[content] = (
+                rrf_scores.get(content, 0)
+                + 1 / (60 + rank)
+            )
+
+        # Build lookup table
+        doc_lookup = {}
+
         for doc, score in bm25_results:
+            doc_lookup[doc.page_content] = doc
 
-            content = doc.page_content
-
-            if content not in seen:
-
-                merged.append(doc)
-
-                seen.add(content)
-
-        # Add Vector results
         for doc, score in vector_results:
+            doc_lookup[doc.page_content] = doc
 
-            content = doc.page_content
+        # Sort by RRF score
+        ranked_docs = sorted(
+            rrf_scores.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )
 
-            if content not in seen:
+        final_docs = []
 
-                merged.append(doc)
+        for content, score in ranked_docs[:k]:
 
-                seen.add(content)
+            final_docs.append(
+                doc_lookup[content]
+            )
 
-        return merged[:k]
+        return final_docs
 
 
 if __name__ == "__main__":
@@ -86,7 +112,8 @@ if __name__ == "__main__":
     hybrid = HybridRetriever()
 
     results = hybrid.hybrid_search(
-        "Who appoints Insurance Ombudsman?"
+        "Who appoints Insurance Ombudsman?",
+        k=10
     )
 
     for i, doc in enumerate(
