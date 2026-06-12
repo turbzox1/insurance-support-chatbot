@@ -25,6 +25,37 @@ def load_vectorstore():
 
     return vectorstore
 
+def get_all_documents():
+
+    embedding_model = HuggingFaceEmbeddings(
+        model_name=EMBEDDING_MODEL,
+        model_kwargs={"device": "cpu"}
+    )
+
+    vectorstore = Chroma(
+        persist_directory=VECTORSTORE_PATH,
+        embedding_function=embedding_model
+    )
+
+    data = vectorstore.get()
+
+    documents = []
+
+    for text, metadata in zip(
+        data["documents"],
+        data["metadatas"]
+    ):
+
+        from langchain_core.documents import Document
+
+        documents.append(
+            Document(
+                page_content=text,
+                metadata=metadata
+            )
+        )
+
+    return documents
 
 def initialize_retriever(k=TOP_K):
     """
