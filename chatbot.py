@@ -42,6 +42,21 @@ def ask_question(question):
     else:
         confidence = "Low"
 
+    # Hallucination guard
+
+    if confidence == "Low":
+
+        logger.warning(
+            f"Low confidence retrieval detected for question: {question}"
+        )
+
+        return (
+            "I could not find reliable information in the provided documents."
+            + "\n\nRetrieval Information:"
+            + f"\n• Documents Retrieved: {len(docs)}"
+            + f"\n• Confidence: {confidence}"
+        )
+
     # Logging
     logger.info(f"Retrieved {len(docs)} documents")
     logger.info(f"Average Score: {average_score:.3f}")
@@ -76,22 +91,30 @@ def ask_question(question):
     )
 
     prompt = f"""
-You are an Insurance Support Assistant.
+    You are an Insurance Support Assistant.
 
-Answer ONLY using the information present in the context below.
+    STRICT RULES:
 
-If the answer is not available in the context, reply exactly:
+    1. Use ONLY the information provided in the context.
+    2. Do NOT use external knowledge.
+    3. Do NOT make assumptions or guesses.
+    4. If the answer is partially available, answer only the available part.
+    5. If the answer is not available in the context, reply exactly:
 
-I could not find that information in the provided documents.
+    I could not find that information in the provided documents.
 
-Context:
-{context}
+    6. Do NOT mention facts that are not present in the context.
+    7. Keep answers concise and factual.
+    8. Do NOT explain beyond the provided information.
 
-Question:
-{question}
+    Context:
+    {context}
 
-Answer:
-"""
+    Question:
+    {question}
+
+    Answer:
+    """
 
     try:
 
