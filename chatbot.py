@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-
+from context_compressor import ContextCompressor
 from hybrid_retriever import HybridRetriever
 from reranker import Reranker
 
@@ -30,7 +30,7 @@ llm = ChatGoogleGenerativeAI(
 hybrid_retriever = HybridRetriever()
 
 reranker = Reranker()
-
+compressor = ContextCompressor()
 
 def ask_question(question):
 
@@ -82,12 +82,22 @@ def ask_question(question):
     docs = [
         doc
         for doc, score in reranked_results
-    ]
+    ]   
 
     scores = [
         score
         for doc, score in reranked_results
     ]
+
+    before_compression = len(docs)
+
+    docs = compressor.compress(docs)
+
+    after_compression = len(docs)
+
+    logger.info(
+        f"Compression: {before_compression} -> {after_compression}"
+    )
 
     # Confidence calculation
     average_score = sum(scores) / len(scores)
@@ -242,7 +252,8 @@ Answer:
             + "\n\nSources:\n"
             + source_text
             + RETRIEVAL_HEADER
-            + f"\n• Documents Retrieved: {len(docs)}"
+            + f"\n• Documents Retrieved: {before_compression}"
+            + f"\n• Documents After Compression: {after_compression}"
             + f"\n• Confidence: {confidence}"
         )
 

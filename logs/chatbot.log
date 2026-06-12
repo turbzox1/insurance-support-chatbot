@@ -145,3 +145,27 @@
 2026-06-12 15:38:23,146 - INFO - Confidence: High
 2026-06-12 15:38:23,147 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
 2026-06-12 15:38:25,364 - INFO - Answer: The Council for Insurance Ombudsmen.
+2026-06-12 16:09:10,610 - INFO - Question: Who appoints Insurance Ombudsman?
+2026-06-12 16:09:10,612 - INFO - Using conversation history for retrieval
+2026-06-12 16:09:17,929 - INFO - Compression: 5 -> 4
+2026-06-12 16:09:17,929 - INFO - Retrieved 4 documents
+2026-06-12 16:09:17,929 - INFO - Average Score: 3.760
+2026-06-12 16:09:17,929 - INFO - Confidence: High
+2026-06-12 16:09:17,929 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 4)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)']
+2026-06-12 16:09:19,274 - INFO - Answer: The Insurance Ombudsman shall be appointed by the Council for Insurance Ombudsmen.
+2026-06-12 16:11:19,065 - INFO - Question: git add .
+2026-06-12 16:11:19,066 - INFO - Using conversation history for retrieval
+2026-06-12 16:11:26,135 - INFO - Compression: 5 -> 3
+2026-06-12 16:11:26,135 - INFO - Retrieved 3 documents
+2026-06-12 16:11:26,135 - INFO - Average Score: 6.074
+2026-06-12 16:11:26,136 - INFO - Confidence: High
+2026-06-12 16:11:26,136 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-12 16:11:28,061 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-12 16:11:28,063 - INFO - Question: git commit -m "Add context compression for retrieved documents"
+2026-06-12 16:11:28,063 - INFO - Using conversation history for retrieval
+2026-06-12 16:11:33,998 - INFO - Compression: 5 -> 3
+2026-06-12 16:11:33,998 - INFO - Retrieved 3 documents
+2026-06-12 16:11:33,999 - INFO - Average Score: 5.797
+2026-06-12 16:11:33,999 - INFO - Confidence: High
+2026-06-12 16:11:33,999 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-12 16:11:35,640 - INFO - Answer: I could not find that information in the provided documents.
