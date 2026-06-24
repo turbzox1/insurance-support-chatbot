@@ -12,7 +12,10 @@ from reranker import Reranker
 from context_compressor import ContextCompressor
 
 from config import LLM_MODEL
-
+from history_manager import (
+    load_history,
+    add_message
+)
 
 # Load environment variables
 load_dotenv()
@@ -20,6 +23,7 @@ load_dotenv()
 
 class ChatState(TypedDict):
     question: str
+    history_context: str
     retrieved_docs: list
     reranked_docs: list
     compressed_docs: list
@@ -40,6 +44,30 @@ reranker = Reranker()
 
 compressor = ContextCompressor()
 
+def history_node(state: ChatState):
+
+    print("\n[History Node]")
+
+    history = load_history()
+
+    history = history[-1:]
+
+    history_context = ""
+
+    for item in history:
+
+        history_context += (
+            f"Question: {item['question']}\n"
+            f"Answer: {item['answer']}\n\n"
+        )
+
+    print(
+        f"Loaded {len(history)} conversations"
+    )
+
+    return {
+        "history_context": history_context
+    }
 
 # -----------------------------
 # Retrieval Node
@@ -48,8 +76,11 @@ def retrieve_node(state: ChatState):
 
     print("\n[Retrieve Node]")
 
+    retrieval_query = state["question"]
+    print("\nRetrieval Query:")
+    print(retrieval_query)
     retrieved_docs = hybrid_retriever.hybrid_search(
-        state["question"],
+        retrieval_query,
         k=10
     )
 
@@ -82,6 +113,7 @@ def rerank_node(state: ChatState):
     return {
         "reranked_docs": reranked_docs
     }
+
 def fallback_node(state: ChatState):
 
     return {
@@ -89,12 +121,9 @@ def fallback_node(state: ChatState):
         "I could not find reliable information in the provided documents."
     }
 
-def route_confidence(
-    state: ChatState
-):
+def route_confidence(state: ChatState):
 
     if state["confidence"] == "Low":
-
         return "fallback"
 
     return "generate"
@@ -136,13 +165,13 @@ def confidence_node(state: ChatState):
         in state["reranked_docs"]
     ]
 
-    average_score = sum(scores) / len(scores)
+    top_score = scores[0]
 
-    if average_score > 3:
+    if top_score > 5:
 
         confidence = "High"
 
-    elif average_score > 1:
+    elif top_score > 2:
 
         confidence = "Medium"
 
@@ -153,12 +182,13 @@ def confidence_node(state: ChatState):
     print(
         f"\n[Confidence Node] "
         f"{confidence} "
-        f"(avg score={average_score:.2f})"
+        f"(top score={top_score:.2f})"
     )
 
     return {
         "confidence": confidence
     }
+
 # -----------------------------
 # Generation Node
 # -----------------------------
@@ -185,6 +215,9 @@ STRICT RULES:
 
 I could not find that information in the provided documents.
 
+Conversation History:
+{state["history_context"]}
+
 Context:
 {context}
 
@@ -202,6 +235,16 @@ Answer:
         "answer": response.content
     }
 
+def save_history_node(state: ChatState):
+
+    print("\n[Save History Node]")
+
+    add_message(
+        state["question"],
+        state["answer"]
+    )
+
+    return {}
 
 # -----------------------------
 # Build Graph
@@ -211,6 +254,16 @@ graph = StateGraph(ChatState)
 graph.add_node(
     "retrieve",
     retrieve_node
+)
+
+graph.add_node(
+    "history",
+    history_node
+)
+
+graph.add_node(
+    "save_history",
+    save_history_node
 )
 
 graph.add_node(
@@ -239,6 +292,11 @@ graph.add_node(
 )
 
 graph.set_entry_point(
+    "history"
+)
+
+graph.add_edge(
+    "history",
     "retrieve"
 )
 
@@ -268,6 +326,11 @@ graph.add_conditional_edges(
 
 graph.add_edge(
     "generate",
+    "save_history"
+)
+
+graph.add_edge(
+    "save_history",
     END
 )
 

@@ -1,4 +1,3 @@
-from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
@@ -12,8 +11,12 @@ from config import (
 )
 
 # Load PDFs
-loader = PyPDFDirectoryLoader(PDF_FOLDER)
-documents = loader.load()
+from document_loader import (
+    load_documents
+)
+
+documents = load_documents()
+
 
 print(f"Loaded {len(documents)} pages")
 
