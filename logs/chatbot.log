@@ -193,3 +193,27 @@
 2026-06-24 16:07:51,100 - INFO - Using conversation history for retrieval
 2026-06-24 16:07:57,104 - INFO - Compression: 5 -> 4
 2026-06-24 16:07:57,104 - WARNING - Low confidence retrieval detected for question: What is the purpose of Insurance Ombudsman?
+2026-06-24 16:11:02,162 - INFO - Question: Who appoints Insurance Ombudsman?
+2026-06-24 16:11:02,163 - INFO - Using conversation history for retrieval
+2026-06-24 16:11:08,559 - INFO - Compression: 5 -> 4
+2026-06-24 16:11:08,559 - INFO - Retrieved 4 documents
+2026-06-24 16:11:08,560 - INFO - Average Score: 2.479
+2026-06-24 16:11:08,560 - INFO - Confidence: Medium
+2026-06-24 16:11:08,560 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 4)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-24 16:11:15,539 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-24 16:11:15,543 - INFO - Question: How many Insurance Ombudsmen are there?
+2026-06-24 16:11:15,545 - INFO - Using conversation history for retrieval
+2026-06-24 16:11:21,817 - INFO - Compression: 5 -> 4
+2026-06-24 16:11:21,818 - WARNING - Low confidence retrieval detected for question: How many Insurance Ombudsmen are there?
+2026-06-24 16:11:21,819 - INFO - Question: When was the Ombudsman system introduced?
+2026-06-24 16:11:21,819 - INFO - Using conversation history for retrieval
+2026-06-24 16:11:27,629 - INFO - Compression: 5 -> 4
+2026-06-24 16:11:27,629 - WARNING - Low confidence retrieval detected for question: When was the Ombudsman system introduced?
+2026-06-24 16:11:27,630 - INFO - Question: What rules govern Insurance Ombudsman?
+2026-06-24 16:11:27,630 - INFO - Using conversation history for retrieval
+2026-06-24 16:11:33,316 - INFO - Compression: 5 -> 5
+2026-06-24 16:11:33,316 - WARNING - Low confidence retrieval detected for question: What rules govern Insurance Ombudsman?
+2026-06-24 16:11:33,317 - INFO - Question: What is the purpose of Insurance Ombudsman?
+2026-06-24 16:11:33,318 - INFO - Using conversation history for retrieval
+2026-06-24 16:11:39,124 - INFO - Compression: 5 -> 4
+2026-06-24 16:11:39,125 - WARNING - Low confidence retrieval detected for question: What is the purpose of Insurance Ombudsman?
