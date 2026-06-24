@@ -169,3 +169,27 @@
 2026-06-12 16:11:33,999 - INFO - Confidence: High
 2026-06-12 16:11:33,999 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 6)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 3)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
 2026-06-12 16:11:35,640 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-24 16:07:01,183 - INFO - Question: Who appoints Insurance Ombudsman?
+2026-06-24 16:07:01,185 - INFO - Using conversation history for retrieval
+2026-06-24 16:07:07,581 - INFO - Compression: 5 -> 4
+2026-06-24 16:07:07,582 - INFO - Retrieved 4 documents
+2026-06-24 16:07:07,582 - INFO - Average Score: 2.479
+2026-06-24 16:07:07,582 - INFO - Confidence: Medium
+2026-06-24 16:07:07,583 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 4)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-24 16:07:31,811 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-24 16:07:31,816 - INFO - Question: How many Insurance Ombudsmen are there?
+2026-06-24 16:07:31,817 - INFO - Using conversation history for retrieval
+2026-06-24 16:07:38,886 - INFO - Compression: 5 -> 4
+2026-06-24 16:07:38,887 - WARNING - Low confidence retrieval detected for question: How many Insurance Ombudsmen are there?
+2026-06-24 16:07:38,888 - INFO - Question: When was the Ombudsman system introduced?
+2026-06-24 16:07:38,889 - INFO - Using conversation history for retrieval
+2026-06-24 16:07:45,010 - INFO - Compression: 5 -> 4
+2026-06-24 16:07:45,011 - WARNING - Low confidence retrieval detected for question: When was the Ombudsman system introduced?
+2026-06-24 16:07:45,012 - INFO - Question: What rules govern Insurance Ombudsman?
+2026-06-24 16:07:45,013 - INFO - Using conversation history for retrieval
+2026-06-24 16:07:51,096 - INFO - Compression: 5 -> 5
+2026-06-24 16:07:51,097 - WARNING - Low confidence retrieval detected for question: What rules govern Insurance Ombudsman?
+2026-06-24 16:07:51,099 - INFO - Question: What is the purpose of Insurance Ombudsman?
+2026-06-24 16:07:51,100 - INFO - Using conversation history for retrieval
+2026-06-24 16:07:57,104 - INFO - Compression: 5 -> 4
+2026-06-24 16:07:57,104 - WARNING - Low confidence retrieval detected for question: What is the purpose of Insurance Ombudsman?
