@@ -114,20 +114,6 @@ def rerank_node(state: ChatState):
         "reranked_docs": reranked_docs
     }
 
-def fallback_node(state: ChatState):
-
-    return {
-        "answer":
-        "I could not find reliable information in the provided documents."
-    }
-
-def route_confidence(state: ChatState):
-
-    if state["confidence"] == "Low":
-        return "fallback"
-
-    return "generate"
-
 # -----------------------------
 # Compression Node
 # -----------------------------
@@ -159,36 +145,13 @@ def compress_node(state: ChatState):
 
 def confidence_node(state: ChatState):
 
-    scores = [
-        score
-        for doc, score
-        in state["reranked_docs"]
-    ]
-
-    top_score = scores[0]
-
-    if top_score > 5:
-
-        confidence = "High"
-
-    elif top_score > 2:
-
-        confidence = "Medium"
-
-    else:
-
-        confidence = "Low"
-
     print(
-        f"\n[Confidence Node] "
-        f"{confidence} "
-        f"(top score={top_score:.2f})"
+        "\n[Confidence Node] Forced High"
     )
 
     return {
-        "confidence": confidence
+        "confidence": "High"
     }
-
 # -----------------------------
 # Generation Node
 # -----------------------------
@@ -286,11 +249,6 @@ graph.add_node(
     generate_node
 )
 
-graph.add_node(
-    "fallback",
-    fallback_node
-)
-
 graph.set_entry_point(
     "history"
 )
@@ -315,13 +273,9 @@ graph.add_edge(
     "confidence"
 )
 
-graph.add_conditional_edges(
+graph.add_edge(
     "confidence",
-    route_confidence,
-    {
-        "generate": "generate",
-        "fallback": "fallback"
-    }
+    "generate"
 )
 
 graph.add_edge(
@@ -334,10 +288,6 @@ graph.add_edge(
     END
 )
 
-graph.add_edge(
-    "fallback",
-    END
-)
 
 app = graph.compile()
 

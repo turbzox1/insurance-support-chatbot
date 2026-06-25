@@ -217,3 +217,30 @@
 2026-06-24 16:11:33,318 - INFO - Using conversation history for retrieval
 2026-06-24 16:11:39,124 - INFO - Compression: 5 -> 4
 2026-06-24 16:11:39,125 - WARNING - Low confidence retrieval detected for question: What is the purpose of Insurance Ombudsman?
+2026-06-24 16:26:54,790 - INFO - Question: how to claim insurance
+2026-06-24 16:26:54,791 - INFO - Using conversation history for retrieval
+2026-06-24 16:27:01,268 - INFO - Compression: 5 -> 5
+2026-06-24 16:31:39,009 - INFO - Question: how to claim an insurance
+2026-06-24 16:31:39,010 - INFO - Using conversation history for retrieval
+2026-06-24 16:31:45,394 - INFO - Compression: 5 -> 5
+2026-06-24 16:31:45,396 - WARNING - Low confidence retrieval detected for question: how to claim an insurance
+2026-06-24 16:36:41,760 - INFO - Question: Who appoints Insurance Ombudsman?
+2026-06-24 16:36:41,777 - INFO - Using conversation history for retrieval
+2026-06-24 16:36:48,672 - INFO - Compression: 5 -> 4
+2026-06-24 16:36:48,695 - INFO - Retrieved 4 documents
+2026-06-24 16:36:48,695 - INFO - Average Score: 2.479
+2026-06-24 16:36:48,696 - INFO - Confidence: Medium
+2026-06-24 16:36:48,696 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 4)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-24 16:36:55,875 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-24 16:38:48,483 - INFO - Question: Who appoints Insurance Ombudsman?
+2026-06-24 16:38:48,484 - INFO - Using conversation history for retrieval
+2026-06-24 16:38:55,309 - INFO - Compression: 5 -> 4
+2026-06-24 16:38:55,327 - INFO - Retrieved 4 documents
+2026-06-24 16:38:55,327 - INFO - Average Score: 2.479
+2026-06-24 16:38:55,327 - INFO - Confidence: Medium
+2026-06-24 16:38:55,328 - INFO - Retrieved Sources: ['INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 4)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-24 16:39:10,762 - INFO - Answer: I could not find that information in the provided documents.
+2026-06-24 16:43:42,504 - INFO - Question: python langgraph_chatbot.py
+2026-06-24 16:43:42,505 - INFO - Using conversation history for retrieval
+2026-06-24 16:43:49,691 - INFO - Compression: 5 -> 5
+2026-06-24 16:43:49,705 - WARNING - Low confidence retrieval detected for question: python langgraph_chatbot.py

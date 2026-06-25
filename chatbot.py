@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-
+from analytics import update_analytics
 from langchain_google_genai import ChatGoogleGenerativeAI
 from context_compressor import ContextCompressor
 from hybrid_retriever import HybridRetriever
@@ -110,6 +110,11 @@ def ask_question(question):
 
     else:
         confidence = "Low"
+
+    update_analytics(
+        confidence,
+        average_score
+    )
 
     # Hallucination guard
     if confidence == "Low":
