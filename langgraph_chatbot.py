@@ -23,12 +23,14 @@ load_dotenv()
 
 class ChatState(TypedDict):
     question: str
+    rewritten_question: str
     history_context: str
     retrieved_docs: list
     reranked_docs: list
     compressed_docs: list
     answer: str
     confidence: str
+    rewritten_question: str
 
 
 # Components
@@ -69,6 +71,45 @@ def history_node(state: ChatState):
         "history_context": history_context
     }
 
+def rewrite_query_node(state: ChatState):
+
+    print("\n[Query Rewrite Node]")
+
+    prompt = f"""
+You are a query rewriting assistant.
+
+Your task is to rewrite the user's question ONLY if it depends on previous conversation.
+
+Conversation History:
+{state["history_context"]}
+
+Current Question:
+{state["question"]}
+
+Rules:
+
+1. If the current question is already complete and understandable, return it exactly as it is.
+2. If the question contains words like "it", "they", "them", "that", "this", etc., rewrite it into a complete standalone question using the conversation history.
+3. Do NOT answer the question.
+4. Return ONLY the rewritten question.
+
+Rewritten Question:
+"""
+
+    response = llm.invoke(prompt)
+
+    rewritten_question = response.content.strip()
+
+    print("Original Question:")
+    print(state["question"])
+
+    print("\nRewritten Question:")
+    print(rewritten_question)
+
+    return {
+        "rewritten_question": rewritten_question
+    }
+
 # -----------------------------
 # Retrieval Node
 # -----------------------------
@@ -76,7 +117,7 @@ def retrieve_node(state: ChatState):
 
     print("\n[Retrieve Node]")
 
-    retrieval_query = state["question"]
+    retrieval_query = state["rewritten_question"]
     print("\nRetrieval Query:")
     print(retrieval_query)
     retrieved_docs = hybrid_retriever.hybrid_search(
@@ -225,6 +266,11 @@ graph.add_node(
 )
 
 graph.add_node(
+    "rewrite_query",
+    rewrite_query_node
+)
+
+graph.add_node(
     "save_history",
     save_history_node
 )
@@ -255,6 +301,11 @@ graph.set_entry_point(
 
 graph.add_edge(
     "history",
+    "rewrite_query"
+)
+
+graph.add_edge(
+    "rewrite_query",
     "retrieve"
 )
 
