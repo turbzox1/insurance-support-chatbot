@@ -1,8 +1,8 @@
 {
-    "total_questions": 4,
-    "high_confidence": 0,
+    "total_questions": 6,
+    "high_confidence": 1,
     "medium_confidence": 2,
-    "low_confidence": 2,
-    "total_score": -2.3599870204925537,
-    "responses_generated": 4
+    "low_confidence": 3,
+    "total_score": -0.3848423957824707,
+    "responses_generated": 6
 }

@@ -244,3 +244,15 @@
 2026-06-24 16:43:42,505 - INFO - Using conversation history for retrieval
 2026-06-24 16:43:49,691 - INFO - Compression: 5 -> 5
 2026-06-24 16:43:49,705 - WARNING - Low confidence retrieval detected for question: python langgraph_chatbot.py
+2026-06-29 15:52:38,502 - INFO - Question: how to claim insurance
+2026-06-29 15:52:38,504 - INFO - Using conversation history for retrieval
+2026-06-29 15:52:46,324 - INFO - Compression: 5 -> 5
+2026-06-29 15:52:46,345 - WARNING - Low confidence retrieval detected for question: how to claim insurance
+2026-06-29 15:53:18,254 - INFO - Question: what is insurance ombudsman
+2026-06-29 15:53:18,255 - INFO - Using conversation history for retrieval
+2026-06-29 15:53:25,371 - INFO - Compression: 5 -> 3
+2026-06-29 15:53:25,395 - INFO - Retrieved 3 documents
+2026-06-29 15:53:25,395 - INFO - Average Score: 3.367
+2026-06-29 15:53:25,396 - INFO - Confidence: High
+2026-06-29 15:53:25,396 - INFO - Retrieved Sources: ['Consumer Affairs Booklet 2019-2020.pdf (Page 79)', 'Consumer Affairs Booklet 2019-2020.pdf (Page 63)', 'INSURANCE OMBUDSMAN RULES, 2017 AS AMENDED TILL 18.05.2021 (1).pdf (Page 7)']
+2026-06-29 15:53:27,891 - INFO - Answer: An Insurance Ombudsman is empowered to redress customer grievances in respect of insurance contracts on personal lines where the compensation amount sought is less than Rs.30 lakhs. The Insurance Ombudsman adjudicates upon the complaint and issues an Award, which the insurer shall comply with within 30 days of receipt. Their functioning is outlined in the Insurance Ombudsman Rules, 2017.
