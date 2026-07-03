@@ -4,7 +4,7 @@ from typing import TypedDict
 from dotenv import load_dotenv
 
 from langgraph.graph import StateGraph, END
-
+from web_search import WebSearchAgent
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from hybrid_retriever import HybridRetriever
@@ -27,6 +27,8 @@ class ChatState(TypedDict):
 
     rewritten_question: str
 
+    intent: str
+
     question_type: str
 
     history_context: str
@@ -41,7 +43,11 @@ class ChatState(TypedDict):
 
     next_action: str
 
+    web_context: str
+
     answer: str
+
+    verified: bool
 
 
 # Components
@@ -56,6 +62,7 @@ hybrid_retriever = HybridRetriever()
 reranker = Reranker()
 
 compressor = ContextCompressor()
+web_search = WebSearchAgent()
 
 def history_node(state: ChatState):
 
@@ -169,6 +176,54 @@ Decision:
 
     return {
         "question_type": decision
+    }
+
+def intent_detection_node(state: ChatState):
+
+    print("\n[Intent Detection Node]")
+
+    prompt = f"""
+You are an intent classification agent.
+
+Question:
+{state["rewritten_question"]}
+
+Classify the user's intent into ONLY one of the following:
+
+KNOWLEDGE
+LIVE_INFORMATION
+
+LIVE_INFORMATION includes questions asking for:
+- latest
+- recent
+- current
+- today
+- this week
+- new announcements
+- live updates
+- ongoing events
+
+Everything else is KNOWLEDGE.
+
+Return ONLY one word.
+
+Intent:
+"""
+
+    response = llm.invoke(prompt)
+
+    intent = response.content.strip().upper()
+
+    if intent not in [
+        "KNOWLEDGE",
+        "LIVE_INFORMATION"
+    ]:
+        intent = "KNOWLEDGE"
+
+    print(f"Intent: {intent}")
+
+    return {
+        "intent": intent
     }
 
 def retrieve_node(state: ChatState):
@@ -300,8 +355,15 @@ def route_next_action(state: ChatState):
 
     return state["next_action"]
 
-def clarification_node(state: ChatState):
+def route_verification(state: ChatState):
 
+    if state["verified"]:
+
+        return "save"
+
+    return "fallback"
+
+def clarification_node(state: ChatState):
     print("\n[Clarification Node]")
 
     prompt = f"""
@@ -336,6 +398,33 @@ Clarification Question:
         "answer": clarification
     }
 
+def web_search_node(state: ChatState):
+
+    print("\n[Web Search Node]")
+
+    results = web_search.search(
+        state["rewritten_question"],
+        max_results=3
+    )
+
+    web_context = ""
+
+    for result in results:
+
+        web_context += (
+            f"Title: {result['title']}\n"
+            f"Content: {result['content']}\n"
+            f"Source: {result['url']}\n\n"
+        )
+
+    print(
+        f"Retrieved {len(results)} web results"
+    )
+
+    return {
+        "web_context": web_context
+    }
+
 # -----------------------------
 # Generation Node
 # -----------------------------
@@ -343,12 +432,21 @@ def generate_node(state: ChatState):
 
     print("\n[Generation Node]")
 
-    context = "\n\n".join(
+    rag_context = "\n\n".join(
         [
             doc.page_content
             for doc in state["compressed_docs"]
         ]
     )
+
+    context = rag_context
+
+    if state.get("web_context"):
+
+        context += (
+            "\n\nExternal Web Information:\n\n"
+            + state["web_context"]
+        )
 
     prompt = f"""
 You are an Insurance Support Assistant.
@@ -380,6 +478,77 @@ Answer:
 
     return {
         "answer": response.content
+    }
+
+def verification_node(state: ChatState):
+
+    print("\n[Verification Node]")
+
+    rag_context = "\n\n".join(
+        [
+            doc.page_content
+            for doc in state["compressed_docs"]
+        ]
+    )
+
+    context = rag_context
+
+    if state.get("web_context"):
+
+        context += (
+            "\n\nExternal Web Information:\n\n"
+            + state["web_context"]
+        )
+
+    prompt = f"""
+You are a response verification agent.
+
+Question:
+{state["question"]}
+
+Available Context:
+{context}
+
+Generated Answer:
+{state["answer"]}
+
+Your task is to verify whether the generated answer is fully supported by the provided context.
+
+Rules:
+
+1. Return VERIFIED if the answer is supported.
+
+2. Return NOT_VERIFIED if the answer contains unsupported claims, hallucinations, or information missing from the context.
+
+Return ONLY one word.
+
+Decision:
+"""
+
+    response = llm.invoke(prompt)
+
+    decision = response.content.strip().upper()
+
+    verified = decision == "VERIFIED"
+
+    print(f"Verification: {decision}")
+
+    return {
+        "verified": verified
+    }
+
+def verification_failed_node(state: ChatState):
+
+    print("\n[Verification Failed]")
+
+    return {
+
+        "answer":
+        (
+            "I could not confidently verify the generated answer "
+            "using the available information."
+        )
+
     }
 
 def save_history_node(state: ChatState):
@@ -419,6 +588,11 @@ graph.add_node(
 )
 
 graph.add_node(
+    "intent_detection",
+    intent_detection_node
+)
+
+graph.add_node(
     "save_history",
     save_history_node
 )
@@ -449,8 +623,23 @@ graph.add_node(
 )
 
 graph.add_node(
+    "verification_failed",
+    verification_failed_node
+)
+
+graph.add_node(
+    "web_search",
+    web_search_node
+)
+
+graph.add_node(
     "generate",
     generate_node
+)
+
+graph.add_node(
+    "verify",
+    verification_node
 )
 
 graph.set_entry_point(
@@ -469,6 +658,11 @@ graph.add_edge(
 
 graph.add_edge(
     "query_analysis",
+    "intent_detection"
+)
+
+graph.add_edge(
+    "intent_detection",
     "retrieve"
 )
 
@@ -493,18 +687,27 @@ graph.add_edge(
 )
 
 graph.add_conditional_edges(
+    "verify",
+    route_verification,
+    {
+        "save": "save_history",
+        "fallback": "verification_failed"
+    }
+)
+
+graph.add_conditional_edges(
     "router",
     route_next_action,
     {
         "GENERATE": "generate",
         "CLARIFY": "clarify",
-        "WEB_SEARCH": "generate"
+        "WEB_SEARCH": "web_search"
     }
 )
 
 graph.add_edge(
     "generate",
-    "save_history"
+    "verify"
 )
 
 graph.add_edge(
@@ -514,6 +717,16 @@ graph.add_edge(
 
 graph.add_edge(
     "clarify",
+    END
+)
+
+graph.add_edge(
+    "web_search",
+    "generate"
+)
+
+graph.add_edge(
+    "verification_failed",
     END
 )
 
