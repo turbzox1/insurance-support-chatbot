@@ -1,245 +1,85 @@
-import os
-import sys
-import time
+"""Streamlit frontend. Session state owns all conversation history."""
+
+from uuid import uuid4
+
 import streamlit as st
-
-PROJECT_ROOT = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "..")
-)
-
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
 
 from src.chatbot.langgraph_chatbot import app
 
 
-# ----------------------------------------
-# Page Configuration
-# ----------------------------------------
+def show_sources(sources):
+    if sources:
+        with st.expander("Sources"):
+            for source in sources:
+                label = source["source"]
+                if source.get("page") is not None:
+                    label += f" (page {source['page']})"
+                st.write(label)
 
-st.set_page_config(
-    page_title="Insurance Support Chatbot",
-    page_icon="🤖",
-    layout="wide"
-)
 
-# ----------------------------------------
-# Sidebar
-# ----------------------------------------
-
-with st.sidebar:
-
-    st.title("🤖 Insurance Chatbot")
-
-    st.markdown("---")
-
-    st.subheader("System Information")
-
-    st.write("**Framework:** LangGraph")
-    st.write("**LLM:** Gemini 2.5 Flash")
-    st.write("**Embedding:** BAAI/bge-small-en-v1.5")
-    st.write("**Retrieval:** Hybrid (BM25 + Vector)")
-    st.write("**Fusion:** Reciprocal Rank Fusion (RRF)")
-    st.write("**Reranker:** BAAI/bge-reranker-base")
-    st.write("**Compression:** Context Compression")
-    st.write("**Query Rewrite:** Enabled")
-    st.write("**Conversation Memory:** Enabled")
-    st.write("**Answer Verification:** Enabled")
-    st.write("**Web Search:** Enabled")
-    st.write("**Domain Detection:** Enabled")
-
-    st.markdown("---")
-
-    if st.button("🗑️ Clear Chat", use_container_width=True):
+def main():
+    st.set_page_config(page_title="Insurance Support Chatbot", page_icon="💬")
+    st.title("Insurance Support Chatbot")
+    st.caption(
+        "Answers grounded in supplied insurance documents, with web search for current information."
+    )
+    if "messages" not in st.session_state:
         st.session_state.messages = []
-        st.rerun()
+        st.session_state.history = []
+        st.session_state.session_id = str(uuid4())
+    with st.sidebar:
+        st.write("Ask about policies, claims, Zero Co-pay or insurance grievances.")
+        st.caption(
+            "Documents are historical references. Check current policy wording for your own coverage."
+        )
+        if st.button("Clear conversation"):
+            st.session_state.messages = []
+            st.session_state.history = []
+            st.session_state.session_id = str(uuid4())
+            st.rerun()
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+            show_sources(message.get("sources", []))
+    question = st.chat_input("Ask an insurance question")
+    if question:
+        st.session_state.messages.append({"role": "user", "content": question})
+        with st.chat_message("user"):
+            st.markdown(question)
+        with st.chat_message("assistant"):
+            try:
+                with st.spinner("Checking available information..."):
+                    result = app.invoke(
+                        {
+                            "question": question,
+                            "history": st.session_state.history,
+                            "session_id": st.session_state.session_id,
+                        }
+                    )
+                st.session_state.history = result["history"]
+                answer, sources = result["answer"], result["sources"]
+                st.markdown(answer)
+                show_sources(sources)
+                with st.expander("Request details"):
+                    st.write(
+                        {
+                            "route": result["route"],
+                            "verified": result["verified"],
+                            "retrieval_confidence": result["confidence"],
+                            "seconds": round(result["latency_seconds"], 2),
+                            "LLM_calls": result["llm_calls"],
+                            "workflow": result["workflow"],
+                        }
+                    )
+                    if result["errors"]:
+                        st.warning("; ".join(result["errors"]))
+            except Exception:
+                answer, sources = "The request failed. Check your setup and try again.", []
+                st.error(answer)
+        st.session_state.messages.append(
+            {"role": "assistant", "content": answer, "sources": sources}
+        )
 
-# ----------------------------------------
-# Title
-# ----------------------------------------
 
-st.title("🤖 Insurance Support Chatbot")
-
-st.caption(
-    "Agentic RAG chatbot powered by LangGraph with Hybrid Retrieval, Reranking, Verification and Web Search."
-)
-
-# ----------------------------------------
-# Session State
-# ----------------------------------------
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# ----------------------------------------
-# Welcome Screen
-# ----------------------------------------
-
-if len(st.session_state.messages) == 0:
-
-    st.info(
-        """
-### Welcome!
-
-You can ask questions such as:
-
-- Who appoints the Insurance Ombudsman?
-- What is the role of the Insurance Ombudsman?
-- How can I file an insurance complaint?
-- What is covered under health insurance?
-- What are the latest IRDAI updates?
-- How are insurance claims settled?
-
-This chatbot uses:
-
-- LangGraph Agent Workflow
-- Hybrid Retrieval (BM25 + Vector)
-- Cross-Encoder Reranking
-- Context Compression
-- Answer Verification
-- Web Search for recent insurance information
-"""
-    )
-
-# ----------------------------------------
-# Display Previous Messages
-# ----------------------------------------
-
-for message in st.session_state.messages:
-
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# ----------------------------------------
-# User Input
-# ----------------------------------------
-
-user_question = st.chat_input(
-    "Ask an insurance-related question..."
-)
-
-if user_question:
-
-    st.session_state.messages.append(
-        {
-            "role": "user",
-            "content": user_question
-        }
-    )
-
-    with st.chat_message("user"):
-        st.markdown(user_question)
-
-    with st.chat_message("assistant"):
-
-        start_time = time.time()
-
-        try:
-
-            with st.spinner("Running LangGraph workflow..."):
-
-                result = app.invoke(
-                    {
-                        "question": user_question
-                    }
-                )
-
-            answer = result["answer"]
-
-            end_time = time.time()
-
-            response_time = end_time - start_time
-
-            st.markdown(answer)
-
-            st.divider()
-
-            col1, col2 = st.columns(2)
-
-            with col1:
-
-                st.metric(
-                    "Confidence",
-                    result.get("confidence", "N/A")
-                )
-
-                st.metric(
-                    "Intent",
-                    result.get("intent", "N/A")
-                )
-
-            with col2:
-
-                st.metric(
-                    "Question Type",
-                    result.get("question_type", "N/A")
-                )
-
-                verified = result.get("verified")
-
-                if verified == "N/A":
-                    verified_text = "N/A"
-                else:
-                    verified_text = "Yes" if verified else "No"
-
-                st.metric(
-                    "Verified",
-                    verified_text
-                )
-
-            st.divider()
-
-            st.subheader("📄 Sources")
-
-            sources = result.get("sources", [])
-
-            if sources:
-
-                for file_name, page in sources:
-
-                    if page is None:
-                        st.write(f"• **{file_name}**")
-                    else:
-                        st.write(
-                            f"• **{file_name}** (Page {page})"
-                        )
-
-            else:
-
-                st.info("No document sources available.")
-
-            st.divider()
-
-            st.subheader("🔄 Agent Workflow")
-
-            workflow = result.get("workflow", [])
-
-            if workflow:
-
-                for step in workflow:
-                    st.write(f"✅ {step}")
-
-            else:
-
-                st.info("Workflow information not available.")
-
-            st.caption(
-                f"⏱ Response generated in {response_time:.2f} seconds"
-            )
-
-        except Exception as e:
-
-            answer = (
-                "An unexpected error occurred while generating the response."
-            )
-
-            st.error(answer)
-
-            st.exception(e)
-
-    st.session_state.messages.append(
-        {
-            "role": "assistant",
-            "content": answer
-        }
-    )
+if __name__ == "__main__":
+    main()

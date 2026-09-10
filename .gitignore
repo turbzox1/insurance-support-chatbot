@@ -20,3 +20,15 @@ vectorstore/
 # OS Files
 .DS_Store
 Thumbs.db
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.env.*
+!.env.example
+history/
+logs/
+analytics.json
+evaluation/results/

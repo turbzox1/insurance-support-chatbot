@@ -1,23 +1,19 @@
+"""Project-relative paths and environment-controlled settings."""
+
+import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parents[2]
-
-# Chunking Settings
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 100
-
-# Retrieval Settings
+load_dotenv(BASE_DIR / ".env")
+CHUNK_SIZE = 900
+CHUNK_OVERLAP = 150
 TOP_K = 5
-SIMILARITY_THRESHOLD = 0.75
-
-# Embedding Model
 EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5"
-
-# Vector Database
+RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 VECTORSTORE_PATH = str(BASE_DIR / "vectorstore")
-
-# Gemini Model
-LLM_MODEL = "gemini-2.5-flash"
-
-# PDF Folder
 PDF_FOLDER = str(BASE_DIR / "data" / "pdfs")
+COLLECTION_NAME = "insurance"
+LLM_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+MIN_RERANK_SCORE = float(os.getenv("MIN_RERANK_SCORE", "0"))

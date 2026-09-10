@@ -1,56 +1,20 @@
-from sentence_transformers import CrossEncoder
+from src.config.config import RERANKER_MODEL
 
 
 class Reranker:
+    def __init__(self, model=None):
+        if model is None:
+            from sentence_transformers import CrossEncoder
 
-    def __init__(self):
-
-        self.model = CrossEncoder(
-            "cross-encoder/ms-marco-MiniLM-L-6-v2"
-        )
+            model = CrossEncoder(RERANKER_MODEL)
+        self.model = model
 
     def rerank(self, query, documents, top_k=5):
-
-        pairs = [
-            (query, doc.page_content)
-            for doc in documents
-        ]
-
-        scores = self.model.predict(
-            pairs
-        )
-
-        ranked = sorted(
-            zip(documents, scores),
-            key=lambda x: x[1],
-            reverse=True
-        )
-
-        return ranked[:top_k]
-    
-if __name__ == "__main__":
-
-    from hybrid_retriever import HybridRetriever
-
-    hybrid = HybridRetriever()
-
-    docs = hybrid.hybrid_search(
-        "Who appoints Insurance Ombudsman?"
-    )
-
-    reranker = Reranker()
-
-    results = reranker.rerank(
-        "Who appoints Insurance Ombudsman?",
-        docs
-    )
-
-    for i, (doc, score) in enumerate(
-        results,
-        start=1
-    ):
-
-        print(f"\nRank {i}")
-        print(f"Score: {score:.4f}")
-        print("-" * 50)
-        print(doc.page_content[:500])
+        if not documents:
+            return []
+        scores = self.model.predict([(query, doc.page_content) for doc in documents])
+        return sorted(
+            [(doc, float(score)) for doc, score in zip(documents, scores)],
+            key=lambda item: item[1],
+            reverse=True,
+        )[:top_k]

@@ -1,160 +1,58 @@
-from rank_bm25 import BM25Okapi
+"""BM25 + vector retrieval, combined using reciprocal rank fusion."""
 
 import re
+
+from rank_bm25 import BM25Okapi
+
+from src.retrieval.retriever import get_all_documents, load_vectorstore
+
 
 def tokenize(text):
     return re.findall(r"\b\w+\b", text.lower())
 
-from .retriever import (
-    get_all_documents,
-    retrieve_with_scores
-)
+
+def document_key(doc):
+    return doc.metadata.get("chunk_id") or (
+        doc.metadata.get("source"),
+        doc.metadata.get("page"),
+        doc.page_content,
+    )
 
 
 class HybridRetriever:
-
-    def __init__(self):
-
-        self.documents = get_all_documents()
-
-        self.tokenized_docs = [
-            tokenize(doc.page_content)
-            for doc in self.documents
-        ]
-
-        self.bm25 = BM25Okapi(
-            self.tokenized_docs
-        )
+    def __init__(self, store=None):
+        self.store = store if store is not None else load_vectorstore()
+        self.documents = get_all_documents(self.store)
+        self.tokenized_docs = [tokenize(doc.page_content) for doc in self.documents]
+        self.bm25 = BM25Okapi(self.tokenized_docs) if any(self.tokenized_docs) else None
 
     def bm25_search(self, query, k=20):
-
-        query_tokens = tokenize(query)
-
-        scores = self.bm25.get_scores(
-            query_tokens
+        if self.bm25 is None:
+            return []
+        tokens = tokenize(query)
+        scores = self.bm25.get_scores(tokens)
+        ranked = sorted(
+            zip(self.documents, scores, self.tokenized_docs), key=lambda x: x[1], reverse=True
         )
-
-        ranked_results = sorted(
-            zip(self.documents, scores),
-            key=lambda x: x[1],
-            reverse=True
-        )
-
-        return ranked_results[:k]
+        return [
+            (doc, float(score)) for doc, score, words in ranked if set(tokens).intersection(words)
+        ][:k]
 
     def hybrid_search(self, query, k=10):
-
-        # Get more candidates from both retrievers
-        bm25_results = self.bm25_search(
-            query,
-            k=20
-        )
-        print("\n===== BM25 RESULTS =====")
-
-        for i, (doc, score) in enumerate(bm25_results[:5], start=1):
-
-            print(f"\nRank {i}")
-
-            print("Score:", score)
-
-            print("Source:", doc.metadata.get("source"))
-
-            print("Page:", doc.metadata.get("page"))
-
-            print(doc.page_content[:200])
-
-        vector_results = retrieve_with_scores(
-            query,
-            k=20
-        )
-        print("\n===== VECTOR RESULTS =====")
-
-        for i, (doc, score) in enumerate(vector_results[:5], start=1):
-
-            print(f"\nRank {i}")
-
-            print("Score:", score)
-
-            print("Source:", doc.metadata.get("source"))
-
-            print("Page:", doc.metadata.get("page"))
-
-            print(doc.page_content[:200])
-
-        # Reciprocal Rank Fusion (RRF)
-        rrf_scores = {}
-
-        # BM25 contribution
-        for rank, (doc, score) in enumerate(
-            bm25_results,
-            start=1
-        ):
-
-            content = doc.page_content
-
-            rrf_scores[content] = (
-                rrf_scores.get(content, 0)
-                + 1 / (60 + rank)
-            )
-
-        # Vector contribution
-        for rank, (doc, score) in enumerate(
-            vector_results,
-            start=1
-        ):
-
-            content = doc.page_content
-
-            rrf_scores[content] = (
-                rrf_scores.get(content, 0)
-                + 1 / (60 + rank)
-            )
-
-        # Build lookup table
-        doc_lookup = {}
-
-        for doc, score in bm25_results:
-            doc_lookup[doc.page_content] = doc
-
-        for doc, score in vector_results:
-            doc_lookup[doc.page_content] = doc
-
-        # Sort by RRF score
-        ranked_docs = sorted(
-            rrf_scores.items(),
-            key=lambda x: x[1],
-            reverse=True
-        )
-
-        final_docs = []
-
-        for content, score in ranked_docs[:k]:
-
-            final_docs.append(
-                doc_lookup[content]
-            )
-
-        return final_docs
-
-
-if __name__ == "__main__":
-
-    print("Testing Hybrid Retrieval...")
-
-    hybrid = HybridRetriever()
-
-    results = hybrid.hybrid_search(
-        "Who appoints Insurance Ombudsman?",
-        k=10
-    )
-
-    for i, doc in enumerate(
-        results,
-        start=1
-    ):
-
-        print(f"\nChunk {i}")
-
-        print("-" * 50)
-
-        print(doc.page_content[:500])
+        if not self.documents or not query.strip():
+            return []
+        rankings = [
+            self.bm25_search(query, max(20, k)),
+            self.store.similarity_search_with_score(query, k=max(20, k)),
+        ]
+        scores, lookup = {}, {}
+        for ranking in rankings:
+            seen = set()
+            for rank, (doc, _) in enumerate(ranking, 1):
+                key = document_key(doc)
+                if key in seen:
+                    continue
+                seen.add(key)
+                scores[key] = scores.get(key, 0) + 1 / (60 + rank)
+                lookup[key] = doc
+        return [lookup[key] for key in sorted(scores, key=scores.get, reverse=True)[:k]]

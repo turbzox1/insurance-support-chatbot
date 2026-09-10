@@ -1,110 +1,49 @@
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_chroma import Chroma
+"""One cached embedding model and Chroma handle per process."""
 
-from src.config.config import (
-    EMBEDDING_MODEL,
-    VECTORSTORE_PATH,
-    TOP_K
-)
+from functools import lru_cache
+from pathlib import Path
+
+from langchain_core.documents import Document
+
+from src.config.config import COLLECTION_NAME, EMBEDDING_MODEL, TOP_K, VECTORSTORE_PATH
 
 
+@lru_cache(maxsize=1)
+def get_embeddings():
+    from langchain_huggingface import HuggingFaceEmbeddings
+
+    return HuggingFaceEmbeddings(
+        model_name=EMBEDDING_MODEL,
+        model_kwargs={"device": "cpu"},
+        encode_kwargs={"normalize_embeddings": True},
+    )
+
+
+@lru_cache(maxsize=1)
 def load_vectorstore():
-    """
-    Load embedding model and Chroma vector database.
-    """
+    from langchain_chroma import Chroma
 
-    embedding_model = HuggingFaceEmbeddings(
-        model_name=EMBEDDING_MODEL,
-        model_kwargs={"device": "cpu"}
-    )
-
-    vectorstore = Chroma(
+    if not Path(VECTORSTORE_PATH, "chroma.sqlite3").exists():
+        raise RuntimeError("Knowledge base missing. Run: python -m src.retrieval.ingest")
+    return Chroma(
+        collection_name=COLLECTION_NAME,
         persist_directory=VECTORSTORE_PATH,
-        embedding_function=embedding_model
+        embedding_function=get_embeddings(),
     )
 
-    return vectorstore
 
-def get_all_documents():
+def get_all_documents(store=None):
+    store = store if store is not None else load_vectorstore()
+    data = store.get()
+    return [
+        Document(page_content=text, metadata={**(metadata or {}), "chunk_id": chunk_id})
+        for chunk_id, text, metadata in zip(data["ids"], data["documents"], data["metadatas"])
+    ]
 
-    embedding_model = HuggingFaceEmbeddings(
-        model_name=EMBEDDING_MODEL,
-        model_kwargs={"device": "cpu"}
-    )
-
-    vectorstore = Chroma(
-        persist_directory=VECTORSTORE_PATH,
-        embedding_function=embedding_model
-    )
-
-    data = vectorstore.get()
-
-    documents = []
-
-    for text, metadata in zip(
-        data["documents"],
-        data["metadatas"]
-    ):
-
-        from langchain_core.documents import Document
-
-        documents.append(
-            Document(
-                page_content=text,
-                metadata=metadata
-            )
-        )
-
-    return documents
 
 def initialize_retriever(k=TOP_K):
-    """
-    Standard retriever for compatibility.
-    """
-
-    vectorstore = load_vectorstore()
-
-    retriever = vectorstore.as_retriever(
-        search_kwargs={"k": k}
-    )
-
-    return retriever
+    return load_vectorstore().as_retriever(search_kwargs={"k": k})
 
 
 def retrieve_with_scores(query, k=TOP_K):
-    """
-    Returns:
-    [
-        (Document, score),
-        (Document, score),
-        ...
-    ]
-    """
-
-    vectorstore = load_vectorstore()
-
-    results = vectorstore.similarity_search_with_score(
-        query=query,
-        k=k
-    )
-
-    return results
-
-
-if __name__ == "__main__":
-
-    query = "What is the role of the Insurance Ombudsman?"
-
-    results = retrieve_with_scores(query, k=20)
-
-    print(f"\nTop {len(results)} Vector Search Results\n")
-
-    for i, (doc, score) in enumerate(results, start=1):
-
-        print("=" * 80)
-        print(f"Rank {i}")
-        print(f"Distance: {score}")
-        print(f"Source: {doc.metadata.get('source')}")
-        print(f"Page: {doc.metadata.get('page')}")
-        print("-" * 80)
-        print(doc.page_content[:500])
+    return load_vectorstore().similarity_search_with_score(query, k=k)
